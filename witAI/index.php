@@ -1,4 +1,8 @@
 
+<form name="form" action="" method="get">
+Input: <input type="text" name="input" value="<?php echo $input;?>">
+</form>
+
 <?php
 
 /* 
@@ -6,19 +10,17 @@
  run this line : phpinfo(); 
  search for curl, if there are no results then your PHP installation doesn't have curl enabled
 */
-echo "Enter text:";
-echo "<form name=\"form\" action=\"\" method=\"get\">";
-echo "<input type=\"text\" name=\"subject\" id=\"subject\" value=\"\">";
-echo "</form>";
 
-$input_utterance = $_GET['subject'];
-echo "Post:" . "<br>" . "$input_utterance" . "<br>";
+include ("stemmer.php");
+$input_utterance = $_GET['input'];
 
 $witRoot = "https://api.wit.ai/message?";
 $witVersion = '20200804';
 
+echo "Post:" . "<br>" . "$input_utterance" . "<br>";
 $witURL =  $witRoot. "v=". "&q=". urlencode($input_utterance);
 // link should be : "https://api.wit.ai/message?v=20200804&q="
+
 
 $ch = curl_init();
 $header = array();
@@ -52,7 +54,7 @@ $response = "";
 //if default ports are changed with MAMP preferences, need to specify port number when connecting sql
 for ($i = 0; $i < count($server_decoded_rsp); $i++){
 	$keyword = $server_decoded_rsp[$i]->value;
-	$con_db = mysqli_connect("localhost:8888", "root", "root", "hw2_witAI"); 
+	$con_db = mysqli_connect("localhost:8889", "root", "root", "hw2_witAI"); 
   	if (mysqli_connect_errno($con_db)) {
     	echo "Failed to connect  to MYSql:" . mysqli_connect_error();
   	}
@@ -67,9 +69,23 @@ for ($i = 0; $i < count($server_decoded_rsp); $i++){
     	echo "failed";
   	}
   	mysqli_close($con_db);
+	
 }
 
 
+
+$command = escapeshellcmd("/usr/local/bin/python3 /Users/weslee_guarneri/Desktop/winterproject/script.py $input_utterance");
+$output = shell_exec($command);
+echo $output;
+
+
+
+
+
+
+
 ?>
+
+
 
 
