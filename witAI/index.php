@@ -5,6 +5,8 @@ Input: <input type="text" name="input" value="<?php echo $input;?>">
 
 <?php
 
+include 'piazza_questions_server.php';
+
 /* 
  if you're having issues with curl, specifically this one: Fatal error: Call to undefined function curl_init()
  run this line : phpinfo(); 
@@ -73,12 +75,37 @@ for ($i = 0; $i < count($server_decoded_rsp); $i++){
 }
 
 
-
+#echo($input_utterance);
 $command = escapeshellcmd("/usr/local/bin/python3 /Users/weslee_guarneri/Desktop/winterproject/script.py $input_utterance");
 $output = shell_exec($command);
 echo $output;
 
+$arr = json_decode($output);
+$table_name = "cse216";
+$post_id = $arr[0];
+$post_problem = $arr[1];
+$post_subject = $arr[2];
+$post_error = $arr[3];
+$post_answer = $arr[4];
+$post_pid = $arr[5];
 
+
+
+#$con_db = mysqli_connect("localhost:8889", "piazza_questions", "root");      
+$con_db = mysqli_connect("localhost", "root", "root", "piazza_questions"); 
+	if(mysqli_connect_errno($con_db)) {
+         echo "Failed to connect to MySQL: " . mysqli_connect_error();
+      }
+
+      $cmd= "INSERT INTO cse216 (id, problem, subject, error, answer, pid) VALUES ('$post_id', '$post_problem', '$post_subject', '$post_error', '$post_answer', '$post_pid')";
+
+      if(mysqli_query($con_db, $cmd)) {
+         echo "Query successfully completed";
+      }
+      else {
+         echo "Query failed to execute";
+      }
+      mysqli_close($con);
 
 
 

@@ -1,6 +1,7 @@
 
 import sys
 import re
+import json
 import string
 import nltk
 from nltk.tokenize import word_tokenize
@@ -14,8 +15,17 @@ nltk.download('stopwords')
 
 stemmer = PorterStemmer()
 
-#txt = sys.argv[1]
-txt = '1|When I do my deserialize message method I get the four bytes for the int field of timestamp I made my array of unsigned chars which are 0 0 0 3. I am sure of them being these values. However, when I run them through the deserialize int function it returns an int value of 768. Anyone know how I\'m getting here, I\'m using the provided method from classwork.|deserialize message; technical question;||deserialize int expects an int message, which is 5 bytes including the type header: e.g. 1 0 0 0 3|13'
+txt = sys.argv
+#txt = '1|When I do my deserialize message method I get the four bytes for the int field of timestamp I made my array of unsigned chars which are 0 0 0 3. I am sure of them being these values. However, when I run them through the deserialize int function it returns an int value of 768. Anyone know how I\'m getting here, I\'m using the provided method from classwork.|deserialize message; technical question;||deserialize int expects an int message, which is 5 bytes including the type header: e.g. 1 0 0 0 3|13'
+
+
+str1 = ""
+
+for ele in txt[1:]:
+    str1 += ele
+    str1 += " "
+
+txt = str1
 
 txt = txt.lower()
 
@@ -52,12 +62,12 @@ for x in range(1, 5):
     list[x].replace(" ", "")
 
     # Tokenizes the Text
-    tokens = word_tokenize(list[x])
-    list[x] = [i for i in tokens if not i in stop_words]
+    # tokens = word_tokenize(list[x])
+    # list[x] = [i for i in tokens if not i in stop_words]
 
-    # Stems the Text
-    s_list = []
-    s_list = [stemmer.stem(word) for word in list[x]]
+    # # Stems the Text
+    # s_list = []
+    # s_list = [stemmer.stem(word) for word in list[x]]
 
     # for word in list[x]:
     #     if word != "":
@@ -65,8 +75,9 @@ for x in range(1, 5):
     #     else:
     #         continue
 
-    list[x] = s_list
+    #list[x] = s_list
 
 # print('\n')
-print(list)
+print(json.dumps(list))
+# print(list)
 # print('\n')
