@@ -77,7 +77,18 @@ for x in range(1, 5):
 
     #list[x] = s_list
 
-# print('\n')
-print(json.dumps(list))
+x = {
+    "id": list[0],
+    "problem": list[1],
+    "subject": list[2],
+    "error": list[3],
+    "answer": list[4],
+    "pid": list[5]
+}
+
+
+newData = json.dumps(x)
+newFile = open("data.json", "w")
+newFile.write(newData)
+newFile.close()
 # print(list)
-# print('\n')

@@ -5,7 +5,11 @@ Input: <input type="text" name="input" value="<?php echo $input;?>">
 
 <?php
 
-include 'piazza_questions_server.php';
+require '/Users/weslee_guarneri/Desktop/winterproject/piazza_folder/piazza_questions_server.php';
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 /* 
  if you're having issues with curl, specifically this one: Fatal error: Call to undefined function curl_init()
@@ -13,7 +17,6 @@ include 'piazza_questions_server.php';
  search for curl, if there are no results then your PHP installation doesn't have curl enabled
 */
 
-include ("stemmer.php");
 $input_utterance = $_GET['input'];
 
 $witRoot = "https://api.wit.ai/message?";
@@ -77,35 +80,32 @@ for ($i = 0; $i < count($server_decoded_rsp); $i++){
 
 #echo($input_utterance);
 $command = escapeshellcmd("/usr/local/bin/python3 /Users/weslee_guarneri/Desktop/winterproject/script.py $input_utterance");
-$output = shell_exec($command);
-echo $output;
+//$output = shell_exec($command);
+//echo gettype($output);
 
-$arr = json_decode($output);
+$myfile = fopen("data.json", "r") or die("Cannot access file.");
+$data = json_decode(fread($myfile, filesize("data.json")));
+fclose($myfile);
+
+//$jsondata = file_get_contents($output);
+//$data = json_decode($output, true);
+//print_r($data);
+//echo $data;
 $table_name = "cse216";
-$post_id = $arr[0];
-$post_problem = $arr[1];
-$post_subject = $arr[2];
-$post_error = $arr[3];
-$post_answer = $arr[4];
-$post_pid = $arr[5];
+$post_id = $data->id;
+$post_problem = $data->problem;
+$post_subject = $data->subject;
+$post_error = $data->error;
+$post_answer = $data->answer;
+$post_pid = $data->pid;
 
 
-
-#$con_db = mysqli_connect("localhost:8889", "piazza_questions", "root");      
 $con_db = mysqli_connect("localhost", "root", "root", "piazza_questions"); 
 	if(mysqli_connect_errno($con_db)) {
          echo "Failed to connect to MySQL: " . mysqli_connect_error();
       }
 
-      $cmd= "INSERT INTO cse216 (id, problem, subject, error, answer, pid) VALUES ('$post_id', '$post_problem', '$post_subject', '$post_error', '$post_answer', '$post_pid')";
-
-      if(mysqli_query($con_db, $cmd)) {
-         echo "Query successfully completed";
-      }
-      else {
-         echo "Query failed to execute";
-      }
-      mysqli_close($con);
+createPost($table_name, $post_id, $post_problem, $post_subject, $post_error, $post_answer, $post_pid);
 
 
 
