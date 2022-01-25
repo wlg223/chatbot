@@ -1,11 +1,7 @@
 
-<form name="form" action="" method="get">
-Input: <input type="text" name="input" value="<?php echo $input;?>">
-</form>
-
 <?php
 
-require '/Users/weslee_guarneri/Desktop/winterproject/piazza_folder/piazza_questions_server.php';
+require 'piazza_questions_server.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -17,12 +13,12 @@ error_reporting(E_ALL);
  search for curl, if there are no results then your PHP installation doesn't have curl enabled
 */
 
-$input_utterance = $_GET['input'];
+$input_utterance = $_POST['value'];
 
 $witRoot = "https://api.wit.ai/message?";
 $witVersion = '20200804';
 
-echo "Post:" . "<br>" . "$input_utterance" . "<br>";
+echo "<br>" . "$input_utterance" . "<br>";
 $witURL =  $witRoot. "v=". "&q=". urlencode($input_utterance);
 // link should be : "https://api.wit.ai/message?v=20200804&q="
 
@@ -51,7 +47,6 @@ if(curl_errno($ch)){
 curl_close ($ch);  
 
 echo "<br>";
-echo "Response:";
 $server_decoded_rsp = json_decode($server_output)->entities->{"issues:issues"};
 
 $response = "";
@@ -100,12 +95,8 @@ $post_answer = $data->answer;
 $post_pid = $data->pid;
 
 
-$con_db = mysqli_connect("localhost", "root", "root", "piazza_questions"); 
-	if(mysqli_connect_errno($con_db)) {
-         echo "Failed to connect to MySQL: " . mysqli_connect_error();
-      }
 
-createPost($table_name, $post_id, $post_problem, $post_subject, $post_error, $post_answer, $post_pid);
+//createPost($table_name, $post_id, $post_problem, $post_subject, $post_error, $post_answer, $post_pid);
 
 
 
